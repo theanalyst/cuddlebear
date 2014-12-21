@@ -17,7 +17,7 @@
   "Group a particular key by month"
   (-> (.groupby dataframe (. dataframe index month)) (.aggregate params)))
 
-(defn plot-month-pages [dataframe]
+(defn plot-monthly-pages [dataframe]
   (kwonly sns.set {"style" "darkgrid"} )
   (kwonly plt.figure {"figsize" (, 8 6)})
   (kwonly dataframe.plot {"kind" "bar"})
@@ -41,7 +41,7 @@
                ["Number of Pages"] sum)))
     (print "Monthly Stats")
     (print pages-per-month)
-    (plot-month-pages (. pages-per-month ["Number of Pages"] ["sum"]))))
+    (plot-monthly-pages (. pages-per-month ["Number of Pages"] ["sum"]))))
 
 (defmain [&rest args]
   (process (get args 1)))
