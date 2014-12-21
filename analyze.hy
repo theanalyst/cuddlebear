@@ -1,4 +1,5 @@
-(import pandas)
+(import pandas
+        [numpy :as np])
 
 (defn parse-csv [filepath kwargs]
   (apply pandas.read_csv [filepath] kwargs))
@@ -19,5 +20,5 @@
                               "parse_dates" ["Date Read"]
                               "index_col" "Date Read"})]
         [books-in-2014 (books-in-year df 2014)]]
-    (print (aggregate-by-month (. books-in-2014 [["Number of Pages"]]) '[sum count]))))
+    (print (aggregate-by-month (. books-in-2014 [["Number of Pages"]]) ["sum" "count" np.mean]))))
 
