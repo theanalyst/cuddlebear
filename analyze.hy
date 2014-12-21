@@ -1,6 +1,10 @@
 (import pandas
         [numpy :as np]
-        [matplotlib.pyplot :as plt])
+        [matplotlib.pyplot :as plt]
+        [seaborn :as sns])
+
+(defmacro kwonly [f kwargs]
+  `(apply ~f [] ~kwargs))
 
 (defn parse-csv [filepath kwargs]
   (apply pandas.read_csv [filepath] kwargs))
@@ -14,7 +18,9 @@
   (-> (.groupby dataframe (. dataframe index month)) (.aggregate params)))
 
 (defn plot-month-pages [dataframe]
-  (apply dataframe.plot [] {"kind" "bar" "width" 0.8 "color" ""})
+  (kwonly sns.set {"style" "darkgrid"} )
+  (kwonly plt.figure {"figsize" (, 8 6)})
+  (kwonly dataframe.plot {"kind" "bar"})
   (plt.xlabel "month →")
   (plt.ylabel "Page Count →")
   (plt.savefig "pages-per-month.png"))
