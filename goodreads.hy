@@ -26,13 +26,14 @@
   (plt.savefig "pages-per-month.png"))
 
 (defn process [filepath]
-  (let [[df (parse-csv filepath
-                   {"usecols" ["Title" "Date Read" "Bookshelves"
-                               "Number of Pages"
-                               "Original Publication Year"]
-                              "parse_dates" ["Date Read"]
-                              "index_col" "Date Read"})]
-        [books-in-2014 (books-in-year df 2014)]
+  (let [[required-fields ["Title" "Date Read" "Bookshelves"
+                  "Number of Pages" "Original Publication Year"]]
+        [books-in-2014
+         (-> (parse-csv filepath
+                        {"usecols" required-fields
+                         "parse_dates" ["Date Read"]
+                         "index_col" "Date Read"})
+             (books-in-year 2014))]
         [pages-per-month (-> (. books-in-2014 [["Number of Pages"]])
                              (aggregate-by-month ["sum" "count" np.mean]))]]
     (print "Pages read in 2014 " ((. books-in-2014 ["Number of Pages"] sum)))
