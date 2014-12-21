@@ -35,6 +35,11 @@
         [books-in-2014 (books-in-year df 2014)]
         [pages-per-month (-> (. books-in-2014 [["Number of Pages"]])
                              (aggregate-by-month ["sum" "count" np.mean]))]]
+    (print "Pages read in 2014 " ((. books-in-2014 ["Number of Pages"] sum)))
+    (print "Pages read in kindle"
+           ((. books-in-2014 [(= books-in-2014.Bookshelves "kindle")]
+               ["Number of Pages"] sum)))
+    (print "Monthly Stats")
     (print pages-per-month)
     (plot-month-pages (. pages-per-month ["Number of Pages"] ["sum"]))))
 
