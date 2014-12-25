@@ -6,8 +6,11 @@
 (defmacro kwonly [f kwargs]
   `(apply ~f [] ~kwargs))
 
-(defn parse-csv [filepath kwargs]
-  (apply pandas.read_csv [filepath] kwargs))
+(defn parse-goodreads-csv [filepath]
+  (let [[required-fields ["Title" "Date Read" "Bookshelves"
+                          "Number of Pages" "Original Publication Year"]]]
+    (pandas.read_csv filepath :usecols required-fields :index-col "Date Read"
+                     :parse-dates true)))
 
 (defn books-in-year [dataframe year]
   (let [[day1 (fn [y] (+ (str y) "-01-01"))]]
@@ -18,9 +21,9 @@
   (-> (.groupby dataframe (. dataframe index month)) (.aggregate params)))
 
 (defn plot-monthly-pages [dataframe]
-  (kwonly sns.set {"style" "darkgrid"} )
-  (kwonly plt.figure {"figsize" (, 8 6)})
-  (kwonly dataframe.plot {"kind" "bar"})
+  (sns.set :style "darkgrid")
+  (plt.figure :figsize (, 8 6))
+  (dataframe.plot :kind "bar")
   (plt.xlabel "month →")
   (plt.ylabel "Page Count →")
   (plt.savefig "pages-per-month.png"))
@@ -29,10 +32,7 @@
   (let [[required-fields ["Title" "Date Read" "Bookshelves"
                   "Number of Pages" "Original Publication Year"]]
         [books-in-2014
-         (-> (parse-csv filepath
-                        {"usecols" required-fields
-                         "parse_dates" ["Date Read"]
-                         "index_col" "Date Read"})
+         (-> (parse-goodreads-csv filepath)
              (books-in-year 2014))]
         [pages-per-month (-> (. books-in-2014 [["Number of Pages"]])
                              (aggregate-by-month ["sum" "count" np.mean]))]]
