@@ -26,9 +26,7 @@
   (plt.savefig "pages-per-month.png"))
 
 (defn process [filepath]
-  (let [[required-fields ["Title" "Date Read" "Bookshelves"
-                  "Number of Pages" "Original Publication Year"]]
-        [books-in-2014
+  (let [[books-in-2014
          (-> (parse-goodreads-csv filepath)
              (books-in-year 2014))]
         [pages-per-month (-> (. books-in-2014 [["Number of Pages"]])
