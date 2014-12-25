@@ -3,9 +3,6 @@
         [matplotlib.pyplot :as plt]
         [seaborn :as sns])
 
-(defmacro kwonly [f kwargs]
-  `(apply ~f [] ~kwargs))
-
 (defn parse-goodreads-csv [filepath]
   (let [[required-fields ["Title" "Date Read" "Bookshelves"
                           "Number of Pages" "Original Publication Year"]]]
